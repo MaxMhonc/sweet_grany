@@ -1,3 +1,5 @@
+TAGS = ['pervo', 'campot', 'vtoroe', 'zakuska', 'pronosnoe', 'nesyedobnoe'
+        'protivnoe', 'decorativnoe', 'strashnoe', 'smeshnoe']
 SHOPS = [
     'Baba Galya MARKET',
     'WARWARUS',
