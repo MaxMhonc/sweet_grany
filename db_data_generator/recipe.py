@@ -4,6 +4,12 @@ from itertools import zip_longest
 
 
 class Recipe:
+    """
+    Recipe instance generates little crazy recipes for self.prods.
+    All recipes consist from "clean step", "prepare step", "merge step",
+    "cook step" and "finalize step". Actions for every step are set via
+    verbs lists in corresponded variables.
+    """
 
     def __init__(
             self,
@@ -23,6 +29,7 @@ class Recipe:
         self.final_prod = None
 
     def get_text(self) -> str:
+        """Build and return whale recipe."""
         steps = []
 
         cleaning = [(self._generate_clean_step(prod), prod)
