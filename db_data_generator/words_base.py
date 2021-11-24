@@ -1,3 +1,11 @@
+SHOPS = [
+    'Baba Galya MARKET',
+    'WARWARUS',
+    'Dead bodies for meat eaters',
+    'Natural Plastic Food',
+    'Client Haters',
+    'Muhamed & Ko'
+]
 ADVERBS = ['in', 'within', 'on', 'with', 'under', 'by']
 AUTHORS = [
     'Sage Hardy',

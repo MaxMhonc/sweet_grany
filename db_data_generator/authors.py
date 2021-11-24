@@ -1,30 +1,21 @@
 from random import shuffle
-from copy import copy
 from typing import List
 
 
 class Author:
     """
-    Author's instance picks up names from self.full_names without repeating
-    until names will not run out.
-    Then it begin to repeat names.
+    Author instance is initialised with full_names list and via
+    get_random_name_generator returns them one by one in random order until it
+    is run out.
     """
 
-    def __init__(self, full_names: list):
+    def __init__(self, full_names: List[str]):
         self.full_names = full_names
-        self._shuffled_names = None
-        self._set_shuffled_names()
+        self._shuffle_names()
 
-    def get_random_name(self) -> str:
-        name = self._shuffled_names.pop()
-        if not self._shuffled_names:
-            self._set_shuffled_names()
-        return name
+    def get_random_name_generator(self) -> str:
+        yield from (name for name in self.full_names)
 
-    def _shuffle_names(self) -> List[str]:
-        names_to_shuffle = copy(self.full_names)
-        shuffle(names_to_shuffle)
-        return names_to_shuffle
+    def _shuffle_names(self):
+        shuffle(self.full_names)
 
-    def _set_shuffled_names(self):
-        self._shuffled_names = self._shuffle_names()
