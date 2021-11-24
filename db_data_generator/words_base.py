@@ -1,3 +1,18 @@
+ADVERBS = ['in', 'within', 'on', 'with', 'under', 'by']
+AUTHORS = [
+    'Sage Hardy',
+    'Sophia Wilcox',
+    'Elliot Henson',
+    'Sheldon Orozco',
+    'Casey Guzman',
+    'Alexandra Barajas',
+    'Terrell Phillips',
+    'Darion Gamble',
+    'Ignacio Meyers',
+    'Izayah Welch',
+    'Aydan Rush',
+    'Kasey Kirby'
+]
 COOKING_WORDS = {
     "cooking": {
         "merge": [
@@ -219,4 +234,3 @@ COOKING_WORDS = {
         "nautilus"
     ]
 }
-ADVERBS = ['in', 'within', 'on', 'with', 'under', 'by']
