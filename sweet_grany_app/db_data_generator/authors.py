@@ -1,4 +1,4 @@
-from random import shuffle
+from random import choice
 from typing import List
 
 
@@ -11,11 +11,11 @@ class Author:
 
     def __init__(self, full_names: List[str]):
         self.full_names = full_names
-        self._shuffle_names()
 
-    def get_random_name_generator(self) -> str:
-        yield from (name for name in self.full_names)
+    def get_all_authors(self) -> List[str]:
+        """Returns all available authors"""
+        return self.full_names
 
-    def _shuffle_names(self):
-        shuffle(self.full_names)
-
+    def get_random_author(self) -> str:
+        """Returns random name from 'full_names'"""
+        return choice(self.full_names)

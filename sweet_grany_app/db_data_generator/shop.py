@@ -1,8 +1,9 @@
-from typing import List, Tuple, Dict, Union
+from typing import List, Dict, Generator
 from random import sample, randint, shuffle
 
 
-ShopModel = Dict[str, Union[str, List[Tuple[str, str]]]]
+ProductsPriceList = List[Dict[str, str]]
+ShopModel = Generator[Dict[str, object], None, None]
 
 
 class Shop:
@@ -45,10 +46,12 @@ class Shop:
         decimal_price = randint(1, 99)
         return '{}.{:02}'.format(whole_price, decimal_price)
 
-    def _get_prods_price_list(self) -> List[Tuple[str, str]]:
+    def _get_prods_price_list(self) -> ProductsPriceList:
         return [
-            (prod, self._generate_price())
-            for prod in self._get_shop_products()
+            {
+                'prod_name': prod_name,
+                'price': self._generate_price()
+            } for prod_name in self._get_shop_products()
         ]
 
     def _shuffle_names(self):
