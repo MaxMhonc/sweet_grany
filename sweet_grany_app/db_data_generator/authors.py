@@ -16,6 +16,6 @@ class Author:
         """Returns all available authors"""
         return self.full_names
 
-    def get_random_author(self) -> str:
+    def get_random_author(self) -> int:
         """Returns random name from 'full_names'"""
         return choice(self.full_names)
