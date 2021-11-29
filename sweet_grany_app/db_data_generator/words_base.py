@@ -1,5 +1,5 @@
 TAGS = [
-    'pervo',
+    'pervoe',
     'campot',
     'vtoroe',
     'zakuska',
