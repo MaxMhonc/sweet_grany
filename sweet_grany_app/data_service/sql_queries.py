@@ -79,5 +79,13 @@ CREATE TABLE IF NOT EXISTS tags_recipes
 
 DROP_ALL_TABLES = \
     """
-    DROP TABLE IF EXISTS recipes, products, products_recipe, authors, shops, products_shop, tags, tags_recipes;
+    DROP TABLE IF EXISTS
+    recipes,
+    products,
+    products_recipe,
+    authors,
+    shops,
+    products_shop,
+    tags,
+    tags_recipes;
     """

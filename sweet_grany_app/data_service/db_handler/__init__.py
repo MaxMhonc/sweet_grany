@@ -1,1 +1,1 @@
-from .db_handler import DBHandler
+from .db_handler import DBHandler  # noqa
