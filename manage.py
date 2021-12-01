@@ -1,12 +1,15 @@
 import argparse
 
+from sweet_grany_app.data_service import sql_sevice
+
 
 def create_tables(arg):
-    print(f'*** tables <{arg}> created ***')
+    sql_sevice.create_all_tables(arg)
 
 
 def recreate_tables(arg):
-    print(f'*** tables <{arg}> recreated ***')
+    sql_sevice.drop_all_tables(arg)
+    sql_sevice.drop_all_tables(arg)
 
 
 if __name__ == '__main__':
@@ -18,6 +21,6 @@ if __name__ == '__main__':
         description='Main module to rule dbs'
     )
     parser.add_argument('action', choices=actions.keys())
-    parser.add_argument('-db', '--db_type', default='all')
+    parser.add_argument('-db', '--db_type', default='sweet_granny')
     args = parser.parse_args()
     actions[args.action](args.db_type)
