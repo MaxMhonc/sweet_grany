@@ -18,12 +18,18 @@ class DataGenerator:
         self.recipe_manager = recipe_manager
 
     def generate_tags(self) -> List[str]:
-        """Generate list of tags"""
+        """
+        Generate list of tags
+        :return: ['tag1', 'tag2', ...]
+        """
         tags = self.tags_manager.get_all_tags()
         return tags
 
     def generate_authors(self) -> List[str]:
-        """Generate list of authors"""
+        """
+        Generate list of authors
+        :return: ['author1', 'author2', ...]
+        """
         author_names = self.authors_manager.get_all_authors()
         return author_names
 
