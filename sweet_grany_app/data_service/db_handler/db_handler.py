@@ -29,4 +29,3 @@ class DBHandler:
         self.connection.close()
         if exc_val:
             raise exc_type(exc_val)
-

@@ -42,17 +42,15 @@ class DataGenerator:
         shop_info = list(self.shop_manager.get_shop_data_generator())
         return shop_info
 
-    def generate_recipe(self) -> List[Dict[str, object]]:
-        recipe = [
-            {
-                'title': self.recipe_manager.get_title(),
-                'author': self.authors_manager.get_random_author(),
-                'tags': self.tags_manager.get_tags_set(),
-                'text': self.recipe_manager.get_text(),
-                'portions': self.recipe_manager.get_portions(),
-                'products': self.recipe_manager.get_products_weight()
-            }
-        ]
+    def generate_recipe(self) -> Dict[str, object]:
+        recipe = {
+            'title': self.recipe_manager.get_title(),
+            'author': self.authors_manager.get_random_author(),
+            'tags': self.tags_manager.get_tags_set(),
+            'text': self.recipe_manager.get_text(),
+            'portions': self.recipe_manager.get_portions(),
+            'products': self.recipe_manager.get_products_weight()
+        }
         return recipe
 
 

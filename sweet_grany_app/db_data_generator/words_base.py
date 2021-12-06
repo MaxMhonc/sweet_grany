@@ -200,7 +200,6 @@ PRODUCTS = [
     "pollock",
     "pomfret",
     "pompano",
-    "sablefish",
     "salmon",
     "sanddab",
     "sardine",
