@@ -18,12 +18,18 @@ class DataGenerator:
         self.recipe_manager = recipe_manager
 
     def generate_tags(self) -> List[str]:
-        """Generate list of tags"""
+        """
+        Generate list of tags
+        :return: ['tag1', 'tag2', ...]
+        """
         tags = self.tags_manager.get_all_tags()
         return tags
 
     def generate_authors(self) -> List[str]:
-        """Generate list of authors"""
+        """
+        Generate list of authors
+        :return: ['author1', 'author2', ...]
+        """
         author_names = self.authors_manager.get_all_authors()
         return author_names
 
@@ -36,17 +42,15 @@ class DataGenerator:
         shop_info = list(self.shop_manager.get_shop_data_generator())
         return shop_info
 
-    def generate_recipe(self) -> List[Dict[str, object]]:
-        recipe = [
-            {
-                'title': self.recipe_manager.get_title(),
-                'author': self.authors_manager.get_random_author(),
-                'tags': self.tags_manager.get_tags_set(),
-                'text': self.recipe_manager.get_text(),
-                'portions': self.recipe_manager.get_portions(),
-                'products': self.recipe_manager.get_products_weight()
-            }
-        ]
+    def generate_recipe(self) -> Dict[str, object]:
+        recipe = {
+            'title': self.recipe_manager.get_title(),
+            'author': self.authors_manager.get_random_author(),
+            'tags': self.tags_manager.get_tags_set(),
+            'text': self.recipe_manager.get_text(),
+            'portions': self.recipe_manager.get_portions(),
+            'products': self.recipe_manager.get_products_weight()
+        }
         return recipe
 
 

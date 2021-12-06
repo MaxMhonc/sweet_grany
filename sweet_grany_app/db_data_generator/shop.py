@@ -31,7 +31,22 @@ class Shop:
         self.min_price = min_price
         self.max_price = max_price
 
+    def get_all_shops(self):
+        return self.shop_names
+
     def get_shop_data_generator(self) -> ShopModel:
+        """
+        Generate shop info in format:
+        {
+          'name': <shop name>,
+          'products': [
+            {
+              'prod_name': <prod_name>,
+              'price': <product price>
+            }
+          ]
+        }
+        """
         yield from ({
             'name': name,
             'products': self._get_prods_price_list()

@@ -1,5 +1,3 @@
-CREATE_ALL_TABLES = \
-    """
 CREATE TABLE IF NOT EXISTS tags
 (
     tag_id SERIAL PRIMARY KEY,
@@ -75,17 +73,3 @@ CREATE TABLE IF NOT EXISTS tags_recipes
             REFERENCES tags (tag_id)
             ON DELETE CASCADE
 );
-    """
-
-DROP_ALL_TABLES = \
-    """
-    DROP TABLE IF EXISTS
-    recipes,
-    products,
-    products_recipe,
-    authors,
-    shops,
-    products_shop,
-    tags,
-    tags_recipes;
-    """
