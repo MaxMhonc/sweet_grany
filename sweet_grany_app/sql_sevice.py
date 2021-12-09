@@ -1,13 +1,18 @@
 import os
 
-from sweet_grany_app.data_service.db_handler import DBHandler
+from sweet_grany_app.data_service.db_handler_psycopg import DBHandler
+from sweet_grany_app.service_abstract import AbstractService
 
 
-class SQLService:
+class SQLService(AbstractService):
 
     def __init__(self, path, db_name: str = 'sweet_granny'):
         self.query_directory_path = path
         self.handler = DBHandler(db_name)
+
+    @classmethod
+    def tell_type(cls):
+        return 'sql'
 
     def create_all_tables(self):
         self.handler.execute_query(self._read_query('create_all_tables.sql'))

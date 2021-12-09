@@ -4,6 +4,7 @@ flake8==4.0.1
 
 # developing requirements
 psycopg2-binary==2.9.2
+sqlalchemy==1.4.27
 
 # types for third party libs type hinting
 types-psycopg2==2.9.3
