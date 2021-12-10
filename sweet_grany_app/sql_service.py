@@ -6,7 +6,7 @@ from sqlalchemy import create_engine, text
 from sweet_grany_app.service_abstract import AbstractService
 
 
-class CoreService(AbstractService):
+class SQLService(AbstractService):
 
     def __init__(self, db_uri: str, db_name: str, query_path: str):
         self.query_path = query_path
@@ -138,7 +138,7 @@ class CoreService(AbstractService):
 
 
 if __name__ == '__main__':
-    worker = CoreService(
+    worker = SQLService(
         'postgresql://localhost:5432',
         'sweet_granny_test',
         os.path.join(os.getcwd(), 'data_service', 'sql_queries')

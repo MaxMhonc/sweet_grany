@@ -2,8 +2,10 @@ import argparse
 from random import sample, randint
 from typing import Union
 
-from sweet_grany_app.sql_sevice import SQLService
-from sweet_grany_app.alchemy_core import CoreService
+from sweet_grany_app.psycopg_sevice import PsycopgService
+from sweet_grany_app.sql_service import SQLService
+from sweet_grany_app.core_service import CoreService
+from sweet_grany_app.models.core_models import meta_object
 from config import QUERIES_PATH
 from sweet_grany_app.db_data_generator import (
     Author, AUTHORS,
@@ -17,19 +19,22 @@ from sweet_grany_app.db_data_generator import (
 query_path = QUERIES_PATH
 
 
-def get_db_worker(worker_type: str) -> Union[SQLService, CoreService]:
+def get_db_worker(worker_type: str) -> Union[PsycopgService, SQLService]:
     workers_type_mapping = {
-        'sql': {
-            'class': SQLService,
+        'psycopg': {
+            'class': PsycopgService,
             'args': (query_path,)
         },
-        'core': {
-            'class': CoreService,
+        'sql': {
+            'class': SQLService,
             'args': ('postgresql://localhost:5432',
                      'sweet_granny',
                      query_path)
         },
-        'orm': {}
+        'core': {'class': CoreService,
+                 'args': ('postgresql://localhost:5432',
+                          'sweet_granny_test',
+                          meta_object)}
     }
     worker_class = workers_type_mapping[worker_type]['class']
     args = workers_type_mapping[worker_type]['args']
