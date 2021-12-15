@@ -9,6 +9,3 @@ sqlalchemy==1.4.27
 # types for third party libs type hinting
 types-psycopg2==2.9.3
 sqlalchemy2-stubs==0.0.2a19
-
-# for diagrams visualization
-pycallgraph==1.0.1
