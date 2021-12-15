@@ -2,9 +2,6 @@ from sqlalchemy import (create_engine, Table, MetaData, Column,
                         INTEGER, VARCHAR, TEXT, SMALLINT, ForeignKey,
                         CheckConstraint)
 
-# engine = create_engine("postgresql://localhost:5432/sweet_granny",
-#                        echo=True, future=True)
-
 
 def get_tables_schemas(url):
     """Little chit to get db tables info if they are created"""
@@ -90,6 +87,3 @@ products = Table(
     Column('product_id', INTEGER(), primary_key=True, autoincrement=True),
     Column('name', VARCHAR(length=100), nullable=False)
 )
-
-if __name__ == '__main__':
-    get_tables_schemas("postgresql://localhost:5432/sweet_granny")

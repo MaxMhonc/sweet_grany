@@ -1,7 +1,7 @@
 import os
 
 from sweet_grany_app.data_service.db_handler_psycopg import DBHandler
-from sweet_grany_app.service_abstract import AbstractService
+from sweet_grany_app.abstract_service import AbstractService
 
 
 class PsycopgService(AbstractService):

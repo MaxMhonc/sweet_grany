@@ -3,9 +3,8 @@ import os
 import sqlalchemy
 from sqlalchemy import create_engine, insert, select, bindparam
 
-from sweet_grany_app.service_abstract import AbstractService
+from sweet_grany_app.abstract_service import AbstractService
 from sweet_grany_app.models.core_models import (
-    meta_object,
     authors as authors_table,
     tags as tags_table,
     products as products_table,
@@ -142,13 +141,3 @@ class CoreService(AbstractService):
 
     def _bind_metaobject(self):
         self.meta_object.bind = self.engine
-
-
-if __name__ == '__main__':
-    url = "postgresql://localhost:5432/"
-    name = 'sweet_granny_test'
-    worker = CoreService(url, name, meta_object)
-    # worker.drop_all_tables()
-
-    worker.create_all_tables()
-    worker.fill_in_authors(['max', 'bob'])

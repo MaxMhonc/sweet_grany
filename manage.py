@@ -5,6 +5,8 @@ from typing import Union
 from sweet_grany_app.psycopg_sevice import PsycopgService
 from sweet_grany_app.sql_service import SQLService
 from sweet_grany_app.core_service import CoreService
+from sweet_grany_app.models.orm_models import Base
+from sweet_grany_app.orm_service import ORMService
 from sweet_grany_app.models.core_models import meta_object
 from config import QUERIES_PATH
 from sweet_grany_app.db_data_generator import (
@@ -31,10 +33,18 @@ def get_db_worker(worker_type: str) -> Union[PsycopgService, SQLService]:
                      'sweet_granny',
                      query_path)
         },
-        'core': {'class': CoreService,
-                 'args': ('postgresql://localhost:5432',
-                          'sweet_granny_test',
-                          meta_object)}
+        'core': {
+            'class': CoreService,
+            'args': ('postgresql://localhost:5432',
+                     'sweet_granny',
+                     meta_object)
+        },
+        'orm': {
+            'class': ORMService,
+            'args': ('postgresql://localhost:5432',
+                     'sweet_granny',
+                     Base)
+        }
     }
     worker_class = workers_type_mapping[worker_type]['class']
     args = workers_type_mapping[worker_type]['args']

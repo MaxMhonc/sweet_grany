@@ -3,7 +3,7 @@ import os
 import sqlalchemy.engine
 from sqlalchemy import create_engine, text
 
-from sweet_grany_app.service_abstract import AbstractService
+from sweet_grany_app.abstract_service import AbstractService
 
 
 class SQLService(AbstractService):
@@ -68,7 +68,7 @@ class SQLService(AbstractService):
                 ]
                 conn.execute(
                     text("""
-            INSERT INTO products_shop 
+            INSERT INTO products_shop
             (product_id, shop_id, price_whole_part, price_decimal_part)
             VALUES ((SELECT product_id FROM products WHERE name = :prod_name),
             (SELECT shop_id FROM shops WHERE name = :shop_name),
@@ -115,8 +115,8 @@ class SQLService(AbstractService):
                 ]
                 conn.execute(
                     text("""
-                    INSERT INTO products_recipe 
-                    (recipe_id, product_id, amount_whole_part, 
+                    INSERT INTO products_recipe
+                    (recipe_id, product_id, amount_whole_part,
                     amount_decimal_part)
                     VALUES (
                     (SELECT recipe_id FROM recipes WHERE title = :title),
