@@ -19,6 +19,6 @@ jobs:
     - name: Lint with flake8
       run: |
         flake8 .
-    - name: Check types with MyPy
-      run: |
-        mypy sweet_grany_app
+#    - name: Check types with MyPy
+#      run: |
+#        mypy sweet_grany_app
