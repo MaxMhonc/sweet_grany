@@ -1,1 +1,0 @@
-INSERT INTO authors (name) VALUES ('<plaseholder>');

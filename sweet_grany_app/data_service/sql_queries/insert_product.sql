@@ -1,1 +1,0 @@
-INSERT INTO products (name) VALUES ('<plaseholder>');
