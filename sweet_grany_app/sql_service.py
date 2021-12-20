@@ -81,7 +81,7 @@ class SQLService(AbstractService):
                 conn.execute(
                     text("""
                     INSERT INTO recipes (title, text, portions, author_id)
-                    VALUES (:title, :text, :portinos,
+                    VALUES (:title, :text, :portions,
                     (SELECT id FROM authors WHERE name = :author_name));
                     """), recipe_attrs
                 )

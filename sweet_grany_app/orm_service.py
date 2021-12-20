@@ -33,11 +33,6 @@ class ORMService(AbstractService):
         self.session.add_all(author_instances)
         self.session.commit()
 
-    def fill_in_tags(self, tags):
-        tag_instances = [Tag(name=tag) for tag in tags]
-        self.session.add_all(tag_instances)
-        self.session.commit()
-
     def fill_in_products(self, products):
         prod_instances = [Product(name=prod) for prod in products]
         self.session.add_all(prod_instances)

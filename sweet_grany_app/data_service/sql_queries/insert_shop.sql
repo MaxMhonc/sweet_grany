@@ -1,1 +1,0 @@
-INSERT INTO shops (name) VALUES ('<plaseholder>');
