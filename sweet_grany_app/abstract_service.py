@@ -27,10 +27,6 @@ class AbstractService(ABC):
         pass
 
     @abstractmethod
-    def fill_in_tags(self, tags):
-        pass
-
-    @abstractmethod
     def fill_in_products(self, products):
         pass
 

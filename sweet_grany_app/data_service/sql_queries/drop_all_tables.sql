@@ -5,5 +5,4 @@ DROP TABLE IF EXISTS
     authors,
     shops,
     products_shop,
-    tags,
-    tags_recipes;
+    tags;
