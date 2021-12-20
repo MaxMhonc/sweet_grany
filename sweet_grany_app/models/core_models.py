@@ -1,5 +1,6 @@
 from sqlalchemy import (create_engine, Table, MetaData, Column,
-                        INTEGER, VARCHAR, TEXT, SMALLINT, ForeignKey,
+                        Integer, Text, SmallInteger, NUMERIC,
+                        VARCHAR, ForeignKey,
                         CheckConstraint)
 
 
@@ -14,76 +15,60 @@ def get_tables_schemas(url):
 
 meta_object = MetaData()
 
-
 authors = Table(
     'authors',
     meta_object,
-    Column('author_id', INTEGER(), primary_key=True, autoincrement=True),
-    Column('name', VARCHAR(length=100), nullable=False)
+    Column('id', Integer(), primary_key=True, autoincrement=True),
+    Column('name', VARCHAR(length=100), nullable=False, unique=True)
 )
 recipes = Table(
     'recipes',
     meta_object,
-    Column('recipe_id', INTEGER(), primary_key=True, autoincrement=True),
-    Column('title', VARCHAR(length=200), nullable=False),
-    Column('text', TEXT(), nullable=False),
-    Column('portions', SMALLINT(), CheckConstraint('portions>0')),
-    Column('author_id', INTEGER(), ForeignKey(
-        'authors.author_id', ondelete='SET NULL'))
+    Column('id', Integer(), primary_key=True, autoincrement=True),
+    Column('title', VARCHAR(length=200), nullable=False, unique=True),
+    Column('text', Text(), nullable=False),
+    Column('portions', SmallInteger(), CheckConstraint('portions>0')),
+    Column('author_id', Integer(), ForeignKey(
+        'authors.id', ondelete='SET NULL'))
 )
 products_shop = Table(
     'products_shop',
     meta_object,
-    Column('product_id', INTEGER(), ForeignKey('products.product_id',
+    Column('product_id', Integer(), ForeignKey('products.id',
                                                ondelete='CASCADE')),
-    Column('shop_id', INTEGER(), ForeignKey('shops.shop_id',
+    Column('shop_id', Integer(), ForeignKey('shops.id',
                                             ondelete='CASCADE')),
     Column(
-        'price_whole_part', INTEGER(),
-        CheckConstraint('price_whole_part>=0'),
-        nullable=False
-    ),
-    Column(
-        'price_decimal_part',
-        INTEGER(),
-        CheckConstraint('price_decimal_part>=0')
+        'price', NUMERIC(), CheckConstraint('price>0'), nullable=False
     )
 )
 shops = Table(
     'shops',
     meta_object,
-    Column('shop_id', INTEGER(), primary_key=True, autoincrement=True),
-    Column('name', VARCHAR(length=100), nullable=False)
-)
-tags_recipes = Table(
-    'tags_recipes',
-    meta_object,
-    Column('recipe_id', INTEGER(), ForeignKey('recipes.recipe_id',
-                                              ondelete='CASCADE')),
-    Column('tag_id', INTEGER(), ForeignKey('tags.tag_id',
-                                           ondelete='CASCADE'))
+    Column('id', Integer(), primary_key=True, autoincrement=True),
+    Column('name', VARCHAR(length=100), nullable=False, unique=True)
 )
 tags = Table(
     'tags',
     meta_object,
-    Column('tag_id', INTEGER(), primary_key=True, autoincrement=True),
-    Column('name', VARCHAR(length=100), nullable=False)
+    Column('id', Integer(), primary_key=True, autoincrement=True),
+    Column('name', VARCHAR(length=100), nullable=False),
+    Column(
+        'recipe_id', Integer(), ForeignKey('recipes.id', ondelete='CASCADE')
+    )
 )
 products_recipe = Table(
     'products_recipe',
     meta_object,
-    Column('recipe_id', INTEGER(), ForeignKey('recipes.recipe_id',
+    Column('recipe_id', Integer(), ForeignKey('recipes.id',
                                               ondelete='CASCADE')),
-    Column('product_id', INTEGER(), ForeignKey('products.product_id',
+    Column('product_id', Integer(), ForeignKey('products.id',
                                                ondelete='CASCADE')),
-    Column('amount_whole_part', INTEGER(),
-           CheckConstraint('amount_whole_part>=0'), nullable=False),
-    Column('amount_decimal_part', INTEGER(),
-           CheckConstraint('amount_decimal_part>=0'))
+    Column('weight', NUMERIC(), CheckConstraint('weight>0'), nullable=False)
 )
 products = Table(
     'products',
     meta_object,
-    Column('product_id', INTEGER(), primary_key=True, autoincrement=True),
+    Column('id', Integer(), primary_key=True, autoincrement=True),
     Column('name', VARCHAR(length=100), nullable=False)
 )

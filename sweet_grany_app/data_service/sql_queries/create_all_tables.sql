@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS authors
 
 CREATE TABLE IF NOT EXISTS recipes
 (
-    id SERIAL PRIMARY KEY,
+    id        SERIAL PRIMARY KEY,
     title     VARCHAR(200) NOT NULL UNIQUE,
     text      TEXT         NOT NULL,
     portions  SMALLINT CHECK ( portions > 0 ),
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS recipes
 
 CREATE TABLE IF NOT EXISTS tags
 (
-    id    SERIAL PRIMARY KEY,
+    id        SERIAL PRIMARY KEY,
     name      VARCHAR(100) NOT NULL,
     recipe_id INT,
     CONSTRAINT fk_recipe
@@ -36,15 +36,15 @@ CREATE TABLE IF NOT EXISTS shops
 
 CREATE TABLE IF NOT EXISTS products
 (
-    id SERIAL PRIMARY KEY,
-    name       VARCHAR(100) NOT NULL
+    id   SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS products_recipe
 (
-    recipe_id           INT,
-    product_id          INT,
-    weight NUMERIC NOT NULL CHECK ( weight > 0 ),
+    recipe_id  INT,
+    product_id INT,
+    weight     NUMERIC NOT NULL CHECK ( weight > 0 ),
     CONSTRAINT fk_recipe
         FOREIGN KEY (recipe_id)
             REFERENCES recipes (id)
@@ -57,9 +57,9 @@ CREATE TABLE IF NOT EXISTS products_recipe
 
 CREATE TABLE IF NOT EXISTS products_shop
 (
-    product_id         INT,
-    shop_id            INT,
-    price NUMERIC NOT NULL CHECK ( price > 0 ),
+    product_id INT,
+    shop_id    INT,
+    price      NUMERIC NOT NULL CHECK ( price > 0 ),
     CONSTRAINT fk_products
         FOREIGN KEY (product_id)
             REFERENCES products (id)

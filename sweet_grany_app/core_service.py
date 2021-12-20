@@ -11,7 +11,6 @@ from sweet_grany_app.models.core_models import (
     shops as shops_table,
     products_shop as products_shops_table,
     recipes as recipes_table,
-    tags_recipes as tags_recipes_table,
     products_recipe as products_recipe_table
 )
 
@@ -56,25 +55,23 @@ class CoreService(AbstractService):
         with self.engine.connect() as conn:
             conn.execute(insert(shops_table), shop_attrs)
             for shop in shops:
-                prod_id = select(products_table.c.product_id).where(
+                prod_id = select(products_table.c.id).where(
                     products_table.c.name == bindparam('prod_name')
                 ).scalar_subquery()
-                shop_id = select(shops_table.c.shop_id).where(
+                shop_id = select(shops_table.c.id).where(
                     shops_table.c.name == bindparam('shop_name')
                 ).scalar_subquery()
                 shop_products_attrs = [
                     {
                         'prod_name': prod['prod_name'],
                         'shop_name': shop['name'],
-                        'whole': prod['price'].split('.')[0],
-                        'decimal': prod['price'].split('.')[1]
+                        'price': prod['price']
                     } for prod in shop['products']
                 ]
                 insert_command = products_shops_table.insert({
                     'product_id': prod_id,
                     'shop_id': shop_id,
-                    'price_whole_part': bindparam("whole"),
-                    'price_decimal_part': bindparam("decimal")
+                    'price': bindparam('price')
                 })
                 conn.execute(insert_command, shop_products_attrs)
 
@@ -88,7 +85,7 @@ class CoreService(AbstractService):
                     'portions': recipe['portions'],
                     'author_name': recipe['author']
                 }
-                author_id = select(authors_table.c.author_id).where(
+                author_id = select(authors_table.c.id).where(
                     authors_table.c.name == bindparam('author_name')
                 ).scalar_subquery()
                 insert_command = recipes_table.insert({
@@ -98,38 +95,35 @@ class CoreService(AbstractService):
                     'author_id': author_id
                 })
                 conn.execute(insert_command, recipe_attrs)
+
                 # insert recipe's tags
                 recipe_tags_attrs = [{
                     'title': recipe['title'],
                     'tag_name': tag
                 } for tag in recipe['tags']]
-                recipe_id = select(recipes_table.c.recipe_id).where(
+                recipe_id = select(recipes_table.c.id).where(
                     recipes_table.c.title == bindparam('title')
                 ).scalar_subquery()
-                tag_id = select(tags_table.c.tag_id).where(
-                    tags_table.c.name == bindparam('tag_name')
-                ).scalar_subquery()
-                insert_command = tags_recipes_table.insert({
-                    'recipe_id': recipe_id,
-                    'tag_id': tag_id
+                insert_command = tags_table.insert({
+                    'name': bindparam('tag_name'),
+                    'recipe_id': recipe_id
                 })
                 conn.execute(insert_command, recipe_tags_attrs)
+
                 # insert recipe's prods
                 recipe_products_attrs = [
                     {
                         'title': recipe['title'],
                         'name': prod['product'],
-                        'whole': prod['weight'].split('.')[0],
-                        'decimal': prod['weight'].split('.')[1]
+                        'weight': prod['weight']
                     } for prod in recipe['products']]
-                product_id = select(products_table.c.product_id).where(
+                product_id = select(products_table.c.id).where(
                     products_table.c.name == bindparam('name')
                 ).scalar_subquery()
                 insert_command = products_recipe_table.insert({
                     'recipe_id': recipe_id,
                     'product_id': product_id,
-                    'amount_whole_part': bindparam('whole'),
-                    'amount_decimal_part': bindparam('decimal')
+                    'weight': bindparam('weight')
                 })
                 conn.execute(insert_command, recipe_products_attrs)
 

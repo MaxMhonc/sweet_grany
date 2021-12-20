@@ -4,12 +4,6 @@ from abc import ABC, abstractmethod
 class AbstractService(ABC):
 
     @classmethod
-    def create_worker(cls, type_, args):
-        for sub_class in cls.__subclasses__():
-            if sub_class.tell_type() == type_:
-                return sub_class(*args)
-
-    @classmethod
     @abstractmethod
     def tell_type(cls):
         pass

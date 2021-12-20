@@ -71,10 +71,11 @@ class SQLService(AbstractService):
     def fill_in_recipes(self, recipes):
         with self.engine.connect() as conn:
             for recipe in recipes:
+                # insert recipe
                 recipe_attrs = {
                     'title': recipe['title'],
                     'text': recipe['text'],
-                    'portinos': recipe['portions'],
+                    'portions': recipe['portions'],
                     'author_name': recipe['author']
                 }
                 conn.execute(
@@ -84,6 +85,7 @@ class SQLService(AbstractService):
                     (SELECT id FROM authors WHERE name = :author_name));
                     """), recipe_attrs
                 )
+                # insert recipe's tags
                 recipe_tags_attrs = [{
                     'title': recipe['title'],
                     'tag_name': tag
