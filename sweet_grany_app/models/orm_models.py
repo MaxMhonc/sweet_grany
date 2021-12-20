@@ -1,7 +1,6 @@
 from sqlalchemy.orm import declarative_base, relationship
-from sqlalchemy import (Table, Column, Integer, Text, SmallInteger, NUMERIC,
-                        INTEGER, VARCHAR, TEXT, SMALLINT, ForeignKey,
-                        CheckConstraint)
+from sqlalchemy import (Column, Integer, Text, SmallInteger, NUMERIC,
+                        VARCHAR, ForeignKey, CheckConstraint)
 
 Base = declarative_base()
 
@@ -31,17 +30,6 @@ class Tag(Base):
         return f'Tag {self.id} - {self.name}'
 
 
-# tags_recipes = Table(
-#     'tags_recipes',
-#     Base.metadata,
-#     Column('recipe_id', INTEGER(),
-#            ForeignKey('recipes.recipe_id', ondelete='CASCADE'),
-#            primary_key=True),
-#     Column('tag_id', INTEGER(),
-#            ForeignKey('tags.tag_id', ondelete='CASCADE'), primary_key=True)
-# )
-
-
 class Recipe(Base):
     __tablename__ = 'recipes'
 
@@ -50,7 +38,7 @@ class Recipe(Base):
     text = Column(Text(), nullable=False)
     portions = Column(SmallInteger(), CheckConstraint('portions>0'))
     author_id = Column(
-        INTEGER(), ForeignKey('authors.author_id', ondelete='SET NULL')
+        Integer(), ForeignKey('authors.id', ondelete='SET NULL')
     )
 
     author = relationship('Author', back_populates='recipes')
@@ -73,10 +61,6 @@ class ProductRecipe(Base):
     weight = Column(
         NUMERIC(), CheckConstraint('weight>0'), nullable=False
     )
-    # amount_whole_part = Column(
-    #     INTEGER(), CheckConstraint('amount_whole_part>=0'), nullable=False)
-    # amount_decimal_part = Column(
-    #     INTEGER(), CheckConstraint('amount_decimal_part>=0'))
 
     products = relationship("Product", back_populates="recipes")
     recipes = relationship("Recipe", back_populates="products")
@@ -109,10 +93,6 @@ class ProductsShop(Base):
         Integer(), ForeignKey('shops.id', ondelete='CASCADE'),
         primary_key=True)
     price = Column(NUMERIC(), CheckConstraint('price>0'), nullable=False)
-    # price_whole_part = Column(
-    #     INTEGER(), CheckConstraint('price_whole_part>=0'), nullable=False)
-    # price_decimal_part = Column(
-    #     INTEGER(), CheckConstraint('price_decimal_part>=0'))
 
     products = relationship("Product", back_populates="shops")
     shops = relationship("Shop", back_populates="products")
@@ -125,7 +105,7 @@ class ProductsShop(Base):
 class Shop(Base):
     __tablename__ = 'shops'
 
-    id = Column(INTEGER(), primary_key=True, autoincrement=True)
+    id = Column(Integer(), primary_key=True, autoincrement=True)
     name = Column(VARCHAR(length=100), nullable=False)
 
     products = relationship('ProductsShop', back_populates='shops')
