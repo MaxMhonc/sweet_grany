@@ -52,8 +52,7 @@ class ORMService(AbstractService):
                         Product.name == prod['prod_name']
                     )).scalar()
                     shop_prod = ProductsShop(
-                        price_whole_part=prod['price'].split('.')[0],
-                        price_decimal_part=prod['price'].split('.')[1]
+                        price=prod['price']
                     )
                     shop_to_db.products.append(shop_prod)
                     product.shops.append(shop_prod)
@@ -73,16 +72,16 @@ class ORMService(AbstractService):
                         Author.name == recipe['author'])).scalar()
                 author.recipes.append(rec)
                 for tag in recipe['tags']:
-                    recipe_tag = s.execute(select(Tag).where(
-                        Tag.name == tag)).scalar()
+                    recipe_tag = Tag(
+                        name=tag, recipe_id=rec.id
+                    )
                     rec.tags.append(recipe_tag)
                 for prod in recipe['products']:
                     product = s.execute(
                         select(Product).where(
                             Product.name == prod['product'])).scalar()
                     prod_rec = ProductRecipe(
-                        amount_whole_part=prod['weight'].split('.')[0],
-                        amount_decimal_part=prod['weight'].split('.')[1]
+                        weight=prod['weight']
                     )
                     product.recipes.append(prod_rec)
                     rec.products.append(prod_rec)

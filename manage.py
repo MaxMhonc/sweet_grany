@@ -23,10 +23,10 @@ query_path = QUERIES_PATH
 
 def get_db_worker(worker_type: str) -> Union[PsycopgService, SQLService]:
     workers_type_mapping = {
-        'psycopg': {
-            'class': PsycopgService,
-            'args': (query_path,)
-        },
+        # 'psycopg': {
+        #     'class': PsycopgService,
+        #     'args': (query_path,)
+        # },
         'sql': {
             'class': SQLService,
             'args': ('postgresql://localhost:5432',
@@ -79,7 +79,7 @@ def fill_in_tables(worker):
     """
     sql_service = get_db_worker(worker)
     sql_service.fill_in_authors(Author(AUTHORS).get_all_authors())
-    sql_service.fill_in_tags(Tag(TAGS).get_all_tags())
+    # sql_service.fill_in_tags(Tag(TAGS).get_all_tags())
     sql_service.fill_in_products(Products(PRODUCTS).get_all_products_names())
     sql_service.fill_in_shops(
         list(Shop(SHOPS, PRODUCTS).get_shop_data_generator())

@@ -1,7 +1,6 @@
 from sqlalchemy.orm import declarative_base, relationship
-from sqlalchemy import (Table, Column,
-                        INTEGER, VARCHAR, TEXT, SMALLINT, ForeignKey,
-                        CheckConstraint)
+from sqlalchemy import (Column, Integer, Text, SmallInteger, NUMERIC,
+                        VARCHAR, ForeignKey, CheckConstraint)
 
 Base = declarative_base()
 
@@ -9,123 +8,107 @@ Base = declarative_base()
 class Author(Base):
     __tablename__ = 'authors'
 
-    author_id = Column(INTEGER(), primary_key=True, autoincrement=True)
-    name = Column(VARCHAR(length=100), nullable=False)
+    id = Column(Integer(), primary_key=True, autoincrement=True)
+    name = Column(VARCHAR(length=100), nullable=False, unique=True)
 
     recipes = relationship('Recipe', back_populates='author')
 
     def __repr__(self):
-        return f'Author {self.author_id} - {self.name}'
+        return f'Author {self.id} - {self.name}'
 
 
 class Tag(Base):
     __tablename__ = 'tags'
 
-    tag_id = Column(INTEGER(), primary_key=True, autoincrement=True)
+    id = Column(Integer(), primary_key=True, autoincrement=True)
     name = Column(VARCHAR(length=100), nullable=False)
+    recipe_id = Column(Integer(), ForeignKey('recipes.id', ondelete='CASCADE'))
 
-    recipes = relationship('Recipe', secondary='tags_recipes',
-                           back_populates='tags')
+    recipes = relationship('Recipe', back_populates='tags')
 
     def __repr__(self):
-        return f'Tag {self.tag_id} - {self.name}'
-
-
-tags_recipes = Table(
-    'tags_recipes',
-    Base.metadata,
-    Column('recipe_id', INTEGER(),
-           ForeignKey('recipes.recipe_id', ondelete='CASCADE'),
-           primary_key=True),
-    Column('tag_id', INTEGER(),
-           ForeignKey('tags.tag_id', ondelete='CASCADE'), primary_key=True)
-)
+        return f'Tag {self.id} - {self.name}'
 
 
 class Recipe(Base):
     __tablename__ = 'recipes'
 
-    recipe_id = Column(INTEGER(), primary_key=True, autoincrement=True)
+    id = Column(Integer(), primary_key=True, autoincrement=True)
     title = Column(VARCHAR(length=200), nullable=False)
-    text = Column(TEXT(), nullable=False)
-    portions = Column(SMALLINT(), CheckConstraint('portions>0'))
+    text = Column(Text(), nullable=False)
+    portions = Column(SmallInteger(), CheckConstraint('portions>0'))
     author_id = Column(
-        INTEGER(), ForeignKey('authors.author_id', ondelete='SET NULL')
+        Integer(), ForeignKey('authors.id', ondelete='SET NULL')
     )
 
     author = relationship('Author', back_populates='recipes')
     products = relationship('ProductRecipe', back_populates='recipes')
-    tags = relationship('Tag', secondary='tags_recipes',
-                        back_populates='recipes')
+    tags = relationship('Tag', back_populates='recipes')
 
     def __repr__(self):
-        return f'Recipe {self.recipe_id} - {self.title}'
+        return f'Recipe {self.id} - {self.title}'
 
 
 class ProductRecipe(Base):
     __tablename__ = 'products_recipe'
 
     recipe_id = Column(
-        INTEGER(), ForeignKey('recipes.recipe_id', ondelete='CASCADE'),
+        Integer(), ForeignKey('recipes.id', ondelete='CASCADE'),
         primary_key=True)
     product_id = Column(
-        INTEGER(), ForeignKey('products.product_id', ondelete='CASCADE'),
+        Integer(), ForeignKey('products.id', ondelete='CASCADE'),
         primary_key=True)
-    amount_whole_part = Column(
-        INTEGER(), CheckConstraint('amount_whole_part>=0'), nullable=False)
-    amount_decimal_part = Column(
-        INTEGER(), CheckConstraint('amount_decimal_part>=0'))
+    weight = Column(
+        NUMERIC(), CheckConstraint('weight>0'), nullable=False
+    )
 
     products = relationship("Product", back_populates="recipes")
     recipes = relationship("Recipe", back_populates="products")
 
     def __repr__(self):
         return (f'Prod-{self.product_id} for Recipe-{self.recipe_id} '
-                f'with {self.amount_whole_part}.{self.amount_decimal_part}')
+                f'with {self.weight}')
 
 
 class Product(Base):
     __tablename__ = 'products'
 
-    product_id = Column(INTEGER(), primary_key=True, autoincrement=True)
+    id = Column(Integer(), primary_key=True, autoincrement=True)
     name = Column(VARCHAR(length=100), nullable=False)
 
     recipes = relationship('ProductRecipe', back_populates='products')
     shops = relationship('ProductsShop', back_populates='products')
 
     def __repr__(self):
-        return f'Product {self.product_id} - {self.name}'
+        return f'Product {self.id} - {self.name}'
 
 
 class ProductsShop(Base):
     __tablename__ = 'products_shop'
 
     product_id = Column(
-        INTEGER(), ForeignKey('products.product_id', ondelete='CASCADE'),
+        Integer(), ForeignKey('products.id', ondelete='CASCADE'),
         primary_key=True)
     shop_id = Column(
-        INTEGER(), ForeignKey('shops.shop_id', ondelete='CASCADE'),
+        Integer(), ForeignKey('shops.id', ondelete='CASCADE'),
         primary_key=True)
-    price_whole_part = Column(
-        INTEGER(), CheckConstraint('price_whole_part>=0'), nullable=False)
-    price_decimal_part = Column(
-        INTEGER(), CheckConstraint('price_decimal_part>=0'))
+    price = Column(NUMERIC(), CheckConstraint('price>0'), nullable=False)
 
     products = relationship("Product", back_populates="shops")
     shops = relationship("Shop", back_populates="products")
 
     def __repr__(self):
         return (f'Product {self.product_id} for Shop {self.shop_id}'
-                f'with {self.price_whole_part}.{self.price_decimal_part}')
+                f'with {self.price}')
 
 
 class Shop(Base):
     __tablename__ = 'shops'
 
-    shop_id = Column(INTEGER(), primary_key=True, autoincrement=True)
+    id = Column(Integer(), primary_key=True, autoincrement=True)
     name = Column(VARCHAR(length=100), nullable=False)
 
     products = relationship('ProductsShop', back_populates='shops')
 
     def __repr__(self):
-        return f'Shop {self.shop_id} - {self.name}'
+        return f'Shop {self.id} - {self.name}'

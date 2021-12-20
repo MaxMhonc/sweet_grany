@@ -34,14 +34,6 @@ class SQLService(AbstractService):
                 attrs
             )
 
-    def fill_in_tags(self, tags):
-        attrs = [{'name': tag} for tag in tags]
-        with self.engine.connect() as conn:
-            conn.execute(
-                text('INSERT INTO tags (name) VALUES (:name);'),
-                attrs
-            )
-
     def fill_in_products(self, products):
         attrs = [{'name': product} for product in products]
         with self.engine.connect() as conn:
@@ -62,17 +54,16 @@ class SQLService(AbstractService):
                     {
                         'prod_name': prod['prod_name'],
                         'shop_name': shop['name'],
-                        'whole': prod['price'].split('.')[0],
-                        'decimal': prod['price'].split('.')[1]
+                        'price': prod['price']
                     } for prod in shop['products']
                 ]
                 conn.execute(
                     text("""
             INSERT INTO products_shop
-            (product_id, shop_id, price_whole_part, price_decimal_part)
-            VALUES ((SELECT product_id FROM products WHERE name = :prod_name),
-            (SELECT shop_id FROM shops WHERE name = :shop_name),
-            :whole, :decimal);
+            (product_id, shop_id, price)
+            VALUES ((SELECT id FROM products WHERE name = :prod_name),
+            (SELECT id FROM shops WHERE name = :shop_name),
+            :price);
                     """),
                     shop_products_attrs
                 )
@@ -80,48 +71,49 @@ class SQLService(AbstractService):
     def fill_in_recipes(self, recipes):
         with self.engine.connect() as conn:
             for recipe in recipes:
+                # insert recipe
                 recipe_attrs = {
                     'title': recipe['title'],
                     'text': recipe['text'],
-                    'portinos': recipe['portions'],
+                    'portions': recipe['portions'],
                     'author_name': recipe['author']
                 }
                 conn.execute(
                     text("""
                     INSERT INTO recipes (title, text, portions, author_id)
                     VALUES (:title, :text, :portinos,
-                    (SELECT author_id FROM authors WHERE name = :author_name));
+                    (SELECT id FROM authors WHERE name = :author_name));
                     """), recipe_attrs
                 )
+                # insert recipe's tags
                 recipe_tags_attrs = [{
                     'title': recipe['title'],
                     'tag_name': tag
                 } for tag in recipe['tags']]
                 conn.execute(
-                    text("""
-                    INSERT INTO tags_recipes (recipe_id, tag_id)
-                    VALUES (
-                    (SELECT recipe_id FROM recipes WHERE title = :title),
-                    (SELECT tag_id FROM tags WHERE name = :tag_name));
-                    """), recipe_tags_attrs
+                    text(
+                        """
+                        INSERT INTO tags (name, recipe_id)
+                        VALUES (:tag_name,
+                        (SELECT id FROM recipes WHERE title = :title));
+                        """
+                    ), recipe_tags_attrs
                 )
                 recipe_products_attrs = [
                     {
                         'title': recipe['title'],
                         'name': prod['product'],
-                        'whole': prod['weight'].split('.')[0],
-                        'decimal': prod['weight'].split('.')[1]
+                        'weight': prod['weight']
                     } for prod in recipe['products']
                 ]
                 conn.execute(
                     text("""
                     INSERT INTO products_recipe
-                    (recipe_id, product_id, amount_whole_part,
-                    amount_decimal_part)
+                    (recipe_id, product_id, weight)
                     VALUES (
-                    (SELECT recipe_id FROM recipes WHERE title = :title),
-                    (SELECT product_id FROM products WHERE name = :name),
-                    :whole, :decimal);"""), recipe_products_attrs
+                    (SELECT id FROM recipes WHERE title = :title),
+                    (SELECT id FROM products WHERE name = :name),
+                    :weight);"""), recipe_products_attrs
                 )
 
     def _read_query(self, file_name: str) -> str:
@@ -135,13 +127,3 @@ class SQLService(AbstractService):
 
     def _get_db_url(self) -> str:
         return os.path.join(self.db_uri, self.db_name)
-
-
-if __name__ == '__main__':
-    worker = SQLService(
-        'postgresql://localhost:5432',
-        'sweet_granny_test',
-        os.path.join(os.getcwd(), 'data_service', 'sql_queries')
-    )
-    # worker.create_all_tables()
-    worker.drop_all_tables()
