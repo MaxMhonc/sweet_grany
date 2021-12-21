@@ -8,3 +8,6 @@
 __pycache__/
 /venv/
 /.mypy_cache/
+
+# db data
+/db_data.json
