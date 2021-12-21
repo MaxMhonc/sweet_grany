@@ -1,4 +1,5 @@
 import argparse
+import json
 from random import sample, randint
 
 from sweet_grany_app.sql_service import SQLService
@@ -7,7 +8,7 @@ from sweet_grany_app.models.orm_models import Base
 from sweet_grany_app.orm_service import ORMService
 from sweet_grany_app.models.core_models import meta_object
 from config import QUERIES_PATH
-from sweet_grany_app.db_data_generator import (
+from utils.db_data_generator import (
     Author, AUTHORS,
     Tag, TAGS,
     Shop, SHOPS,
@@ -71,14 +72,42 @@ def fill_in_tables(worker):
     5. recipes
     :return: None
     """
+    db_data = json.loads(read_file('db_data.json'))
     sql_service = get_db_worker(worker)
-    sql_service.fill_in_authors(Author(AUTHORS).get_all_authors())
-    sql_service.fill_in_products(Products(PRODUCTS).get_all_products_names())
-    sql_service.fill_in_shops(
-        list(Shop(SHOPS, PRODUCTS).get_shop_data_generator())
-    )
-    sql_service.fill_in_recipes(
-        [DataGenerator(
+    sql_service.fill_in_authors(db_data['authors'])
+    sql_service.fill_in_products(db_data['products'])
+    sql_service.fill_in_shops(db_data['shops'])
+    sql_service.fill_in_recipes(db_data['recipes'])
+    # sql_service.fill_in_authors(Author(AUTHORS).get_all_authors())
+    # sql_service.fill_in_products(Products(PRODUCTS).get_all_products_names())
+    # sql_service.fill_in_shops(
+    #     list(Shop(SHOPS, PRODUCTS).get_shop_data_generator())
+    # )
+    # sql_service.fill_in_recipes(
+    #     [DataGenerator(
+    #         Tag(TAGS),
+    #         Author(AUTHORS),
+    #         Products(PRODUCTS),
+    #         Shop(SHOPS, PRODUCTS),
+    #         Recipe(
+    #             COOKING_WORDS['cooking']['clean'],
+    #             COOKING_WORDS['cooking']['prepare'],
+    #             COOKING_WORDS['cooking']['merge'],
+    #             COOKING_WORDS['cooking']['cook'],
+    #             COOKING_WORDS['cooking']['finalize'],
+    #             ADVERBS,
+    #             sample(PRODUCTS, randint(3, 5))
+    #         )
+    #     ).generate_recipe() for _ in range(50)]
+    # )
+
+
+def generate_db_data(file='db_data.json'):
+    db_data = {
+        'authors': Author(AUTHORS).get_all_authors(),
+        'products': Products(PRODUCTS).get_all_products_names(),
+        'shops': list(Shop(SHOPS, PRODUCTS).get_shop_data_generator()),
+        'recipes': [DataGenerator(
             Tag(TAGS),
             Author(AUTHORS),
             Products(PRODUCTS),
@@ -93,7 +122,20 @@ def fill_in_tables(worker):
                 sample(PRODUCTS, randint(3, 5))
             )
         ).generate_recipe() for _ in range(50)]
-    )
+    }
+    write_file(file, json.dumps(db_data))
+    print(f'data generated in {file}')
+
+
+def write_file(file, data):
+    with open(file, 'w') as file:
+        file.write(data)
+
+
+def read_file(file):
+    with open(file, 'r') as file:
+        data = file.read()
+    return data
 
 
 if __name__ == '__main__':
@@ -101,7 +143,8 @@ if __name__ == '__main__':
         'create': create_tables,
         'drop': drop_tables,
         'recreate': recreate_tables,
-        'fill_in': fill_in_tables
+        'fill_in': fill_in_tables,
+        'gen_data': generate_db_data
     }
     parser = argparse.ArgumentParser(
         description='Main module to rule dbs'
@@ -109,6 +152,11 @@ if __name__ == '__main__':
     parser.add_argument('action', choices=actions.keys())
     parser.add_argument('-db', '--db_type', default='sweet_granny')
     parser.add_argument('-w', '--worker',
-                        choices=['sql', 'core', 'orm'], required=True)
+                        choices=['sql', 'core', 'orm'])
+
     args = parser.parse_args()
-    actions[args.action](args.worker)
+
+    if args.action in ('create', 'drop', 'recreate', 'fill_in'):
+        actions[args.action](args.worker)
+    elif args.action in ('gen_data',):
+        actions[args.action]()
