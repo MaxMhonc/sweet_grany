@@ -78,28 +78,6 @@ def fill_in_tables(worker):
     sql_service.fill_in_products(db_data['products'])
     sql_service.fill_in_shops(db_data['shops'])
     sql_service.fill_in_recipes(db_data['recipes'])
-    # sql_service.fill_in_authors(Author(AUTHORS).get_all_authors())
-    # sql_service.fill_in_products(Products(PRODUCTS).get_all_products_names())
-    # sql_service.fill_in_shops(
-    #     list(Shop(SHOPS, PRODUCTS).get_shop_data_generator())
-    # )
-    # sql_service.fill_in_recipes(
-    #     [DataGenerator(
-    #         Tag(TAGS),
-    #         Author(AUTHORS),
-    #         Products(PRODUCTS),
-    #         Shop(SHOPS, PRODUCTS),
-    #         Recipe(
-    #             COOKING_WORDS['cooking']['clean'],
-    #             COOKING_WORDS['cooking']['prepare'],
-    #             COOKING_WORDS['cooking']['merge'],
-    #             COOKING_WORDS['cooking']['cook'],
-    #             COOKING_WORDS['cooking']['finalize'],
-    #             ADVERBS,
-    #             sample(PRODUCTS, randint(3, 5))
-    #         )
-    #     ).generate_recipe() for _ in range(50)]
-    # )
 
 
 def generate_db_data(file='db_data.json'):
