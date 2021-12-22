@@ -7,7 +7,7 @@ from sweet_grany_app.core_service import CoreService
 from sweet_grany_app.models.orm_models import Base
 from sweet_grany_app.orm_service import ORMService
 from sweet_grany_app.models.core_models import meta_object
-from config import QUERIES_PATH
+from config import DB_NAME, DB_URL
 from utils.db_data_generator import (
     Author, AUTHORS,
     Tag, TAGS,
@@ -17,28 +17,20 @@ from utils.db_data_generator import (
     DataGenerator, ADVERBS
 )
 
-query_path = QUERIES_PATH
-
 
 def get_db_worker(worker_type: str):
     workers_type_mapping = {
         'sql': {
             'class': SQLService,
-            'args': ('postgresql://localhost:5432',
-                     'sweet_granny',
-                     query_path)
+            'args': (DB_URL, DB_NAME,)
         },
         'core': {
             'class': CoreService,
-            'args': ('postgresql://localhost:5432',
-                     'sweet_granny',
-                     meta_object)
+            'args': (DB_URL, DB_NAME, meta_object)
         },
         'orm': {
             'class': ORMService,
-            'args': ('postgresql://localhost:5432',
-                     'sweet_granny',
-                     Base)
+            'args': (DB_URL, DB_NAME, Base)
         }
     }
     worker_class = workers_type_mapping[worker_type]['class']
@@ -48,18 +40,18 @@ def get_db_worker(worker_type: str):
 
 def create_tables(worker):
     sql_service = get_db_worker(worker)
-    sql_service.create_all_tables()
+    sql_service.create_tables()
 
 
 def drop_tables(worker):
     sql_service = get_db_worker(worker)
-    sql_service.drop_all_tables()
+    sql_service.drop_tables()
 
 
 def recreate_tables(worker):
     sql_service = get_db_worker(worker)
-    sql_service.drop_all_tables()
-    sql_service.create_all_tables()
+    sql_service.drop_tables()
+    sql_service.create_tables()
 
 
 def fill_in_tables(worker):
@@ -74,10 +66,10 @@ def fill_in_tables(worker):
     """
     db_data = json.loads(read_file('db_data.json'))
     sql_service = get_db_worker(worker)
-    sql_service.fill_in_authors(db_data['authors'])
-    sql_service.fill_in_products(db_data['products'])
-    sql_service.fill_in_shops(db_data['shops'])
-    sql_service.fill_in_recipes(db_data['recipes'])
+    sql_service.fill_authors(db_data['authors'])
+    sql_service.fill_products(db_data['products'])
+    sql_service.fill_shops(db_data['shops'])
+    sql_service.fill_recipes(db_data['recipes'])
 
 
 def generate_db_data(file='db_data.json'):
