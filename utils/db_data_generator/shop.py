@@ -1,9 +1,8 @@
-from typing import List, Dict, Generator
+from typing import List, Dict, Union
 from random import sample, randint, shuffle
 
-
 ProductsPriceList = List[Dict[str, str]]
-ShopModel = Generator[Dict[str, object], None, None]
+ShopTypeModel = dict[str, Union[str, list[dict[str, str]]]]
 
 
 class Shop:
@@ -34,7 +33,7 @@ class Shop:
     def get_all_shops(self):
         return self.shop_names
 
-    def get_shop_data_generator(self) -> ShopModel:
+    def get_shops_data(self) -> list[ShopTypeModel]:
         """
         Generate shop info in format:
         {
@@ -47,10 +46,10 @@ class Shop:
           ]
         }
         """
-        yield from ({
+        return [{
             'name': name,
             'products': self._get_prods_price_list()
-        } for name in self.shop_names)
+        } for name in self.shop_names]
 
     def _get_shop_products(self) -> List[str]:
         total_amount = int((len(self.prods) / 100) * self.prod_percent)

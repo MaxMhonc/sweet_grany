@@ -4,7 +4,7 @@ import sqlalchemy
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, select
 
-from sweet_grany_app.abstract_service import AbstractService
+from sweet_grany_app.service_interface import AbstractService
 from sweet_grany_app.models.orm_models import (
     Author, Tag, Product, Shop, ProductsShop, Recipe, ProductRecipe)
 
@@ -22,23 +22,23 @@ class ORMService(AbstractService):
     def tell_type(cls):
         pass
 
-    def create_all_tables(self):
+    def create_tables(self):
         self.base.metadata.create_all(self.engine)
 
-    def drop_all_tables(self):
+    def drop_tables(self):
         self.base.metadata.drop_all(self.engine)
 
-    def fill_in_authors(self, authors):
+    def fill_authors(self, authors):
         author_instances = [Author(name=author) for author in authors]
         self.session.add_all(author_instances)
         self.session.commit()
 
-    def fill_in_products(self, products):
+    def fill_products(self, products):
         prod_instances = [Product(name=prod) for prod in products]
         self.session.add_all(prod_instances)
         self.session.commit()
 
-    def fill_in_shops(self, shops):
+    def fill_shops(self, shops):
         for shop in shops:
             shop_to_db = Shop(name=shop['name'])
             with self.session.no_autoflush as s:
@@ -54,7 +54,7 @@ class ORMService(AbstractService):
                     s.add(shop_prod)
             self.session.commit()
 
-    def fill_in_recipes(self, recipes):
+    def fill_recipes(self, recipes):
         for recipe in recipes:
             rec = Recipe(
                 title=recipe['title'],

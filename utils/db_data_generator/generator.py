@@ -39,7 +39,7 @@ class DataGenerator:
         return products
 
     def generate_shops(self) -> List[Dict[str, object]]:
-        shop_info = list(self.shop_manager.get_shop_data_generator())
+        shop_info = self.shop_manager.get_shops_data()
         return shop_info
 
     def generate_recipe(self) -> Dict[str, object]:
@@ -53,36 +53,13 @@ class DataGenerator:
         }
         return recipe
 
+    def generate_recipes(self, amount: int):
+        recipes = [self.generate_recipe() for _ in range(amount)]
+        return self._remove_repeating(recipes)
 
-if __name__ == '__main__':
-    from random import sample, randint
-
-    from sweet_grany_app.db_data_generator.tags import Tag
-    from sweet_grany_app.db_data_generator.authors import Author
-    from sweet_grany_app.db_data_generator.products import Products
-    from sweet_grany_app.db_data_generator.shop import Shop
-    from sweet_grany_app.db_data_generator.recipe import Recipe
-    from sweet_grany_app.db_data_generator.words_base import TAGS, AUTHORS, \
-        COOKING_WORDS, SHOPS, PRODUCTS, ADVERBS
-
-    patient = DataGenerator(
-        Tag(TAGS),
-        Author(AUTHORS),
-        Products(PRODUCTS),
-        Shop(SHOPS, PRODUCTS),
-        Recipe(
-            COOKING_WORDS['cooking']['clean'],
-            COOKING_WORDS['cooking']['prepare'],
-            COOKING_WORDS['cooking']['merge'],
-            COOKING_WORDS['cooking']['cook'],
-            COOKING_WORDS['cooking']['finalize'],
-            ADVERBS,
-            sample(PRODUCTS, randint(3, 5))
-        )
-    )
-
-    print(patient.generate_tags())
-    print(patient.generate_authors())
-    print(patient.generate_products())
-    print(patient.generate_shops())
-    print(patient.generate_recipe())
+    @staticmethod
+    def _remove_repeating(sequence):
+        sub_sequence = {}
+        for item in sequence:
+            sub_sequence[item['title']] = item
+        return list(sub_sequence.values())

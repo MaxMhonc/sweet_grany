@@ -3,7 +3,7 @@ import os
 import sqlalchemy
 from sqlalchemy import create_engine, insert, select, bindparam
 
-from sweet_grany_app.abstract_service import AbstractService
+from sweet_grany_app.service_interface import AbstractService
 from sweet_grany_app.models.core_models import (
     authors as authors_table,
     tags as tags_table,
@@ -29,13 +29,13 @@ class CoreService(AbstractService):
     def tell_type(cls):
         pass
 
-    def create_all_tables(self):
+    def create_tables(self):
         self.meta_object.create_all()
 
-    def drop_all_tables(self):
+    def drop_tables(self):
         self.meta_object.drop_all()
 
-    def fill_in_authors(self, authors):
+    def fill_authors(self, authors):
         attrs = [{'name': author} for author in authors]
         with self.engine.connect() as conn:
             conn.execute(insert(authors_table), attrs)
@@ -45,12 +45,12 @@ class CoreService(AbstractService):
         with self.engine.connect() as conn:
             conn.execute(insert(tags_table), attrs)
 
-    def fill_in_products(self, products):
+    def fill_products(self, products):
         attrs = [{'name': product} for product in products]
         with self.engine.connect() as conn:
             conn.execute(insert(products_table), attrs)
 
-    def fill_in_shops(self, shops):
+    def fill_shops(self, shops):
         shop_attrs = [{'name': shop['name']} for shop in shops]
         with self.engine.connect() as conn:
             conn.execute(insert(shops_table), shop_attrs)
@@ -75,7 +75,7 @@ class CoreService(AbstractService):
                 })
                 conn.execute(insert_command, shop_products_attrs)
 
-    def fill_in_recipes(self, recipes):
+    def fill_recipes(self, recipes):
         with self.engine.connect() as conn:
             for recipe in recipes:
                 # insert recipe
