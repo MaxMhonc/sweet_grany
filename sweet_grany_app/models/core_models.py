@@ -21,6 +21,7 @@ authors = Table(
     Column('id', Integer(), primary_key=True, autoincrement=True),
     Column('name', VARCHAR(length=100), nullable=False, unique=True)
 )
+
 recipes = Table(
     'recipes',
     meta_object,
@@ -31,6 +32,7 @@ recipes = Table(
     Column('author_id', Integer(), ForeignKey(
         'authors.id', ondelete='SET NULL'))
 )
+
 products_shop = Table(
     'products_shop',
     meta_object,
@@ -42,12 +44,14 @@ products_shop = Table(
         'price', NUMERIC(), CheckConstraint('price>0'), nullable=False
     )
 )
+
 shops = Table(
     'shops',
     meta_object,
     Column('id', Integer(), primary_key=True, autoincrement=True),
     Column('name', VARCHAR(length=100), nullable=False, unique=True)
 )
+
 tags = Table(
     'tags',
     meta_object,
@@ -57,6 +61,7 @@ tags = Table(
         'recipe_id', Integer(), ForeignKey('recipes.id', ondelete='CASCADE')
     )
 )
+
 products_recipe = Table(
     'products_recipe',
     meta_object,
@@ -66,6 +71,7 @@ products_recipe = Table(
                                                ondelete='CASCADE')),
     Column('weight', NUMERIC(), CheckConstraint('weight>0'), nullable=False)
 )
+
 products = Table(
     'products',
     meta_object,

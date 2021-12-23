@@ -4,7 +4,7 @@ CREATE_TABLES = """
         id   SERIAL PRIMARY KEY,
         name VARCHAR(100) NOT NULL UNIQUE
     );
-    
+
     CREATE TABLE IF NOT EXISTS recipes
     (
         id        SERIAL PRIMARY KEY,
@@ -17,7 +17,7 @@ CREATE_TABLES = """
                 REFERENCES authors (id)
                 ON DELETE SET NULL
     );
-    
+
     CREATE TABLE IF NOT EXISTS tags
     (
         id        SERIAL PRIMARY KEY,
@@ -28,19 +28,19 @@ CREATE_TABLES = """
                 REFERENCES recipes (id)
                 ON DELETE CASCADE
     );
-    
+
     CREATE TABLE IF NOT EXISTS shops
     (
         id   SERIAL PRIMARY KEY,
         name VARCHAR(100) NOT NULL UNIQUE
     );
-    
+
     CREATE TABLE IF NOT EXISTS products
     (
         id   SERIAL PRIMARY KEY,
         name VARCHAR(100) NOT NULL
     );
-    
+
     CREATE TABLE IF NOT EXISTS products_recipe
     (
         recipe_id  INT,
@@ -55,7 +55,7 @@ CREATE_TABLES = """
                 REFERENCES products (id)
                 ON DELETE CASCADE
     );
-    
+
     CREATE TABLE IF NOT EXISTS products_shop
     (
         product_id INT,
