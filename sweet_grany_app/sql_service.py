@@ -1,5 +1,5 @@
 import os
-from typing import Optional
+from typing import Optional, Union
 
 import sqlalchemy.engine
 from sqlalchemy import create_engine, text
@@ -76,9 +76,20 @@ class SQLService(AbstractService):
                     text(dml.INSERT_RECIPE_PRODUCTS), recipe_products_attrs
                 )
 
-    def _execute_query(
-            self, query: str, params: Optional[list] = None) -> CursorResult:
+    def get_recipe_costs(self, title: str):
+        attrs = {'title': title}
+        prices = self._execute_query(dml.GET_RECIPE_PRICES, attrs)
+        return prices.fetchone()
 
+    def get_components_price(self, title: str):
+        attrs = {'title': title}
+        prices = self._execute_query(
+            dml.GET_CHEAPER_RECIPE_COMPONENTS_PRICE, attrs)
+        return prices.fetchall()
+
+    def _execute_query(
+            self, query: str, params: Optional[Union[list, dict]] = None
+    ) -> CursorResult:
         with self.engine.connect() as conn:
             res = conn.execute(text(query), params)
 

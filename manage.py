@@ -98,6 +98,22 @@ def generate_db_data(file='db_data.json'):
     print(f'data generated in {file}')
 
 
+def get_recipe_prices(worker, title):
+    sql_service = get_db_worker(worker)
+    print(sql_service.get_recipe_costs(title))
+
+
+def get_components_prices(worker, title):
+    sql_service = get_db_worker(worker)
+    data = sql_service.get_components_price(title)
+    template = '{:^20}' * 5
+    titles = ('PRODUCT', 'SHOP', 'PRICE', 'WEIGHT', 'COST')
+    print(template.format(*titles), '\n')
+    for item in data:
+        print(template.format(*item))
+
+
+
 def write_file(file, data):
     with open(file, 'w') as file:
         file.write(data)
@@ -115,7 +131,9 @@ if __name__ == '__main__':
         'drop': drop_tables,
         'recreate': recreate_tables,
         'fill_in': fill_in_tables,
-        'gen_data': generate_db_data
+        'gen_data': generate_db_data,
+        'rec_prc': get_recipe_prices,
+        'cmp_prc': get_components_prices
     }
     parser = argparse.ArgumentParser(
         description='Main module to rule dbs.\n'
@@ -130,7 +148,11 @@ if __name__ == '__main__':
              'recreate - drop -> create all tables\n\n'
              '!!!create, drop, recreate requires -w param.\n\n'
              'gen_data - generate data for db tables to file "db_data.json", '
-             'doesn\'t require for additional params'
+             'doesn\'t require for additional params\n\n'
+             'rec_prc - returns max and min prices for recipe by title\n'
+             '!!! requires: "-w" param, "-t" - recipe title\n\n'
+             'cmp_prc - returns cheaper prices for recipe components'
+             '!!! requires: "-w" param, "-t" - recipe title\n\n'
     )
     parser.add_argument(
         '-db', '--database', type=str, default='sweet_granny',
@@ -140,6 +162,10 @@ if __name__ == '__main__':
         '-w', '--worker', choices=['sql', 'core', 'orm'],
         help='define worker type'
     )
+    parser.add_argument(
+        '-t', '--title',
+        help='recipe title'
+    )
 
     args = parser.parse_args()
 
@@ -147,3 +173,5 @@ if __name__ == '__main__':
         actions[args.action](args.worker)
     elif args.action in ('gen_data',):
         actions[args.action]()
+    elif args.action in ('rec_prc', 'cmp_prc'):
+        actions[args.action](args.worker, args.title)

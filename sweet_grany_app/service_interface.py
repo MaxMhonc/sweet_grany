@@ -28,3 +28,11 @@ class AbstractService(ABC):
     @abstractmethod
     def fill_recipes(self, recipes: list):
         """Takes recipes info and inserts into table(s)"""
+
+    @abstractmethod
+    def get_recipe_costs(self, title: str):
+        """Returns max and min cost for recipe by its title"""
+
+    @abstractmethod
+    def get_components_price(self, title: str):
+        """Returns cheaper prices for recipe's components"""
