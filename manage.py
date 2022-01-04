@@ -113,7 +113,6 @@ def get_components_prices(worker, title):
         print(template.format(*item))
 
 
-
 def write_file(file, data):
     with open(file, 'w') as file:
         file.write(data)
