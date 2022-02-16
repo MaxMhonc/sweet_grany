@@ -2,7 +2,7 @@ import os
 
 import sqlalchemy
 from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, select
+from sqlalchemy import create_engine, select, func
 
 from sweet_grany_app.service_interface import AbstractService
 from sweet_grany_app.models.orm_models import (
@@ -83,8 +83,54 @@ class ORMService(AbstractService):
                     s.add(prod_rec)
             self.session.commit()
 
+    def get_recipe_costs(self, title: str):
+        rec_prods = self.session.query(
+            ProductRecipe.weight,
+            func.min(ProductsShop.price).label('min_price'),
+            func.max(ProductsShop.price).label('max_price')
+        ).select_from(
+            Product).join(ProductRecipe).join(Recipe).join(
+            ProductsShop).filter(
+            Recipe.title == title).group_by(
+            Product.name, ProductRecipe.weight).all()
+
+        prices = [(prod.weight * prod.min_price, prod.weight * prod.max_price)
+                  for prod in rec_prods]
+
+        recipe_min_price, recipe_max_price = map(sum, zip(*prices))
+        return recipe_max_price, recipe_min_price
+
+    def get_components_price(self, title: str):
+        pass
+
     def _create_engine(self) -> sqlalchemy.engine.Engine:
         return create_engine(self._get_db_url())
 
     def _get_db_url(self) -> str:
         return os.path.join(self.db_url, self.db_name)
+
+
+# if __name__ == '__main__':
+    # from sweet_grany_app.models.orm_models import Base
+    # from config import DB_NAME, DB_URL
+    # from sqlalchemy import func
+    #
+    # worker = ORMService(DB_URL, DB_NAME, Base)
+    #
+    # title = 'pompano on pomfret under fennel'
+    #
+    # rec_prods = worker.session.query(
+    #     ProductRecipe.weight,
+    #     func.min(ProductsShop.price).label('min_price'),
+    #     func.max(ProductsShop.price).label('max_price')
+    # ).select_from(
+    #     Product).join(ProductRecipe).join(Recipe).join(ProductsShop).filter(
+    #     Recipe.title == title).group_by(
+    #     Product.name, ProductRecipe.weight).all()
+    #
+    # prices = [(prod.weight * prod.min_price, prod.weight * prod.max_price)
+    #           for prod in rec_prods]
+    #
+    # # recipe_min_price, recipe_max_price = map(sum, map(list, zip(*prices)))
+    # recipe_min_price, recipe_max_price = map(sum, zip(*prices))
+    # print(recipe_min_price, recipe_max_price)

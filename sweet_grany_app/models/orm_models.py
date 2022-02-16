@@ -66,8 +66,8 @@ class ProductRecipe(Base):
     recipes = relationship("Recipe", back_populates="products")
 
     def __repr__(self):
-        return (f'Prod-{self.product_id} for Recipe-{self.recipe_id} '
-                f'with {self.weight}')
+        return (f'Prod-{self.product_id} for Recipe-{self.recipe_id=} '
+                f'with {self.weight=}')
 
 
 class Product(Base):
@@ -99,7 +99,10 @@ class ProductsShop(Base):
 
     def __repr__(self):
         return (f'Product {self.product_id} for Shop {self.shop_id}'
-                f'with {self.price}')
+                f'with {self.price=}')
+
+    def __lt__(self, other):
+        return self.price < other.price
 
 
 class Shop(Base):
